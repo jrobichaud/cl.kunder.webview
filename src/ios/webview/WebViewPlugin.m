@@ -32,7 +32,7 @@
           webViewController = [[WebViewController alloc] init];
           webViewController.delegate = self; // esto es para poder recibir el evento de que webView se cerro
           webViewController.startPage = url;
-          [self.viewController presentViewController:webViewController animated:YES completion:nil];
+          [self.viewController presentViewController:webViewController animated:NO completion:nil];
       });
 
       CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -52,7 +52,7 @@
     @try {
 
       dispatch_async(dispatch_get_main_queue(), ^{
-        [self.viewController dismissViewControllerAnimated:YES completion:nil];
+        [self.viewController dismissViewControllerAnimated:NO completion:nil];
         [self dispose];
       });
 
