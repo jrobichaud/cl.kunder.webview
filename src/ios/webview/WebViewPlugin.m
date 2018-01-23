@@ -6,8 +6,25 @@
 #import "WebViewPlugin.h"
 
 @implementation WebViewPlugin
+NSArray* results;
 
 @synthesize webViewController;
+
+- (void)adjustBehavior{
+  #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 110000
+    if (@available(iOS 11.0, *)) {
+        [self.webView.scrollView setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentNever];
+    }
+  #endif
+}
+
+- (void)pluginInitialize {
+    [self adjustBehavior];
+}
+
+- (void)webViewAdjustmenBehavior:(CDVInvokedUrlCommand*)command{
+  [self adjustBehavior];
+}
 
 - (void)subscribeCallback:(CDVInvokedUrlCommand*)command
 {
@@ -50,7 +67,7 @@
   NSLog(@"hidewebViewView");
   [self.commandDelegate runInBackground:^{
     @try {
-
+      results = command.arguments;
       dispatch_async(dispatch_get_main_queue(), ^{
         [self.viewController dismissViewControllerAnimated:NO completion:nil];
       });
@@ -72,10 +89,13 @@
 
 -(void)webViewFinished{
   NSLog(@"webViewFinished");
+  if (webViewFinishedCallBack) {
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:results];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:webViewFinishedCallBack];
+    webViewFinishedCallBack = nil;
+    results = nil;
+  }
   webViewController = nil;
-
-  CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-  [self.commandDelegate sendPluginResult:pluginResult callbackId:webViewFinishedCallBack];
 }
 
 @end

@@ -17,7 +17,7 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-# cl.kunder.webview
+# kunder-cordova-plugin-webview
 This cordova plugin enables you to open a second webview in your app.
 This webview is totally independent from the main webview, but allows you tu access plugins and other Cordova resources.
 
@@ -27,7 +27,7 @@ Report issues on [github issue tracker](https://github.com/kunder-lab/cl.kunder.
 
 ## Installation
 ```
-    cordova plugin add github.com/kunder-lab/cl.kunder.webview.git
+    cordova plugin add https://github.com/kunder-lab/cl.kunder.webview.git
 ```
 
 ## Supported Platforms
@@ -72,24 +72,32 @@ __Parameters__:
 - __errorCallback__: Is triggered when the plugin fails to be called or is called with error. _(Function)_
 - __loading__: Should show a loading dialog while webview is loading. _(Boolean optional)_
 
+### SubscribeCallback
+Suscribes a callback that is triggered when a webView is closed.
+
+__Parameters__:
+- __successCallback__: The callback that will be called when a webview is closed. It contains an array of parameteres given by the Close/Hide method called in the child webview. _(Function)_
+- __errorCallback__: Is triggered when the plugin fails to be called or is called with error. _(Function)_
+
+#### Usage
+```js
+// Main webview
+// This will be fired on second webview close
+webview.SubscribeCallback(function(params) { console.log(params); }, function(){ console.log('error'); })
+``` 
+
 ### Close/Hide
 __Parameters__:
 - __successCallback__: Is triggered when the plugin is succesfully called. _(Function)_
 - __errorCallback__: Is triggered when the plugin fails to be called or is called with error. _(Function)_
+- __params__: Parameterers that want to be delivered to the parent webview through the SubscribeCallback method. _(Array)_
 
 ### HideLoading
 Close the loading shown by Show method.
 
 __Parameters__:
-- __sucessCallback__: The callback that will be called when the loading is closed. _(Function optional)_
+- __successCallback__: The callback that will be called when the loading is closed. _(Function optional)_
 - __errorCallback__: Is triggered when the plugin fails to be called or is called with error. _(Function optional)_
-
-### SubscribeCallback
-Suscribes a callback that is triggered when a webView is closed.
-
-__Parameters__:
-- __successCallback__: The callback that will be called when a webview is closed. _(Function)_
-- __errorCallback__: Is triggered when the plugin fails to be called or is called with error. _(Function)_
 
 ### SubscribeExitCallback (Android only)
 Subscribes an exit callback that is triggered when ExitApp method is called.
@@ -104,3 +112,7 @@ This method is usefull when onResume event is defined in your main app. You shou
 
 ### ExitApp (iOS)
 This method execute objective-C exit(0) method.
+
+### SetWebViewBehavior (iOS)
+This method adjust the size of the current webview using the iOS 11 status bar space. This method should be called at the beginning of the app.
+No parameters required.
